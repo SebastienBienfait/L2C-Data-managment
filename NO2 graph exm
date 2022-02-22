@@ -1,0 +1,38 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+url = "https://drive.google.com/uc?id=142uY47X9XLXnHhLdTNjtGR2xu0mG914n"
+df = pd.read_csv(url, skiprows=1)
+#calling the data file and defining the variable "df" as the holder 
+
+df.drop(df[df['Nitrogen dioxide'] == 'nodata'].index, inplace = True)
+
+
+df['Date'] = pd.to_datetime(df['Date'])
+
+
+df['Nitrogen dioxide'] = df['Nitrogen dioxide'].astype(float)
+display(df)
+df.info()
+
+df['Year'] = df["Date"].dt.year
+#display(df)
+year_mean = df.groupby('Year')['Nitrogen dioxide'].median()
+year_max = df.groupby('Year')['Nitrogen dioxide'].max()
+year_min = df.groupby('Year')['Nitrogen dioxide'].min()
+#print("mean by year = ",year_mean, "\n max by year = ",year_max, "\n min by year = ",year_min)
+
+plt.title("Max, Min and Avg levels of NO2 in Swale-Newington from 2014-2021")
+plt.xlabel("Max by weekday")
+plt.ylabel("Days of the week")
+
+x_lim = [2014,2015,2016,2017,2018,2019,2020,2021]
+y_lim = [40,40,40,40,40,40,40,40]
+plt.plot(year_mean,label="year_mean")
+plt.plot(year_max,label="year_max")
+plt.plot(year_min,label="year_min")
+plt.plot(x_lim,y_lim,label="Maximum safe level of NO2")
+plt.legend(loc="upper right")
+
+plt.show()
